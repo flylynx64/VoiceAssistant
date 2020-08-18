@@ -33,6 +33,7 @@ OWMappID = "9144b4e98289658a7eed0a55a622e987" #open weather map
 count = 0
 SID = "d0ed361606ec4bc9b73f513ddbe768aa"
  
+# text to speech
 def speak(text):
 	tts = gTTS(text = text, lang = "en")
 	global count
@@ -41,6 +42,7 @@ def speak(text):
 	tts.save(filename)
 	playsound.playsound(filename)
 
+# get input audio and convert to string
 def getAudio():
 	r = sr.Recognizer()
 	with sr.Microphone() as source:
@@ -53,6 +55,7 @@ def getAudio():
 			 print("Exception: " + str(e))
 	return said
 
+# open a certain program using subprocess
 def openProgram(text):
 	word = text.split()[1]
 	if word == "chrome":
@@ -77,6 +80,7 @@ def openProgram(text):
 		hearthstone = r"C:\Program Files (x86)\Battle.net\Battle.net.exe"
 		subprocess.Popen([hearthstone])
 
+# open a certain file
 def openFile(text):
 #def find_files(filename, search_path):
 	filename = ""
@@ -97,6 +101,7 @@ def openFile(text):
 			result.append(os.path.join(root, files[i]))
 	subprocess.Popen(["C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", result[0]])
 
+# make a note using speech to text
 def note(text):
 	index = text.split().index("note")
 	note = text.split()[index + 1:]
@@ -107,6 +112,7 @@ def note(text):
 		f.write(text1)
 	subprocess.Popen(["notepad.exe", file_name])
 
+# open chrome and google an input
 def google(text):
 	#driver = webdriver.Chrome("C:\Program Files\CDriver\chromedriver.exe")
 	#driver.maximize_window()
@@ -117,16 +123,19 @@ def google(text):
 	webbrowser.open_new_tab(url)
 	#driver.get("https://www.google.com/search?q=" + '+'.join(query))
 
+# use wolframalpha api to search a query
 def search(text):
 	client = wolframalpha.Client(WAappID)
 	result = client.query(text)
 	speak(next(result.results).text)
 
+# split a word into character list
 def spell(text):
 	index = text.split().index("spell")
 	word = text.split()[index + 1]
 	return list(word)
 
+# poll internet speed
 def internet(text):
 	st = speedtest.Speedtest()
 	servernames = []
@@ -140,6 +149,7 @@ def internet(text):
 	else:
 		print("Internet is slow")
 
+# play a song using spotify
 def spotify(text):
 	scope = "user-library-read"
 	sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
@@ -148,6 +158,7 @@ def spotify(text):
 		track = item['track']
 		print(idx, track['artists'][0]['name'], " – ", track['name'])
 
+# return string of weather of a certain location
 def weather(text):
 	if text.count("in") > 0:
 		index = text.split().index("in")
@@ -167,6 +178,7 @@ def weather(text):
 	out = "The current temperature is " + str(curr_temp) + " while it feels like " + str(feel) + ". The high for today will be " + str(temp_max) + " and the low will be " + str(temp_min) + ". Current conditions are " + str(cond) + "."
 	return out
 
+# authentication for google calendar
 def authenticateGoogle():
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
@@ -194,6 +206,7 @@ def authenticateGoogle():
     return service
 
 #def getEvents(n, service):
+# get events from google calendar
 def getEvents(service):
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
@@ -216,6 +229,7 @@ def getEvents(service):
         print(start, event['summary'])
         speak(event['summary'])
 
+# parse a date from speech
 def getDate(text):
 	text = text.lower()
 	currentDate = datetime.date.today()
