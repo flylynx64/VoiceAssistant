@@ -325,7 +325,6 @@ def recognize():
 			known_face_encodings.append(val)
 	face_locations = []
 	face_encodings = []
-	face_names = []
 	process_this_frame = True
 	while True:
 	    ret, frame = cam.read()
@@ -341,7 +340,6 @@ def recognize():
 	            if True in matches:
 	                first_match_index = matches.index(True)
 	                name = known_face_names[first_match_index]
-	            face_names.append(name)
 	    process_this_frame = not process_this_frame
 	    for (top, right, bottom, left), name in zip(face_locations, face_names):
 	        top *= 4
@@ -351,7 +349,7 @@ def recognize():
 	        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 	        cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), -1)
 	        font = cv2.FONT_HERSHEY_DUPLEX
-	        cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+	        cv2.putText(frame, ("Hello " + name), (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 	    cv2.imshow('Video', frame)
 	    k = cv2.waitKey(1)
 	    if k%256 == 27:
@@ -359,49 +357,57 @@ def recognize():
 	        break
 	cam.release()
 	cv2.destroyAllWindows()
+	return name
 
 def main():
 	global count
 	count = 0
-	if()
-	while(True):
-		speak("Hello. Choose speech or text.")
-		text = "text" #getAudio().lower()
-		if text == "speech":
-			speak("What would you like to do?")
-			text = getAudio().lower()
-			print(text)
-		elif text == "text":
-			speak("What would you like to do?")
-			text = input("What would you like to do?\n")
-		if text.count("stop") > 0:
-			break
-		if text.count("open") > 0:
-			if text.count("file") > 0:
-				openFile(text)
+	# run learnfaces once
+	name = recognize().lower()
+	if(name == "zach"):
+		print("Hello Zach")
+		speak("Hello Zach")
+		while(True):
+			speak("Hello. Choose speech or text.")
+			text = "text" #getAudio().lower()
+			if text == "speech":
+				speak("What would you like to do?")
+				text = getAudio().lower()
+				print(text)
+			elif text == "text":
+				speak("What would you like to do?")
+				text = input("What would you like to do?\n")
+			if text.count("stop") > 0:
+				break
+			if text.count("open") > 0:
+				if text.count("file") > 0:
+					openFile(text)
+				else:
+					openProgram(text)
+			elif text.count("events") > 0:
+				speak("Your events are")
+				getEvents(authenticateGoogle())
+			elif text.count("note") > 0:
+				note(text)
+			elif text.count("google") > 0:
+				google(text)
+			elif text.count("weather") > 0:
+				out = weather(text)
+				print(out)
+				speak(out)
+			elif text.count("spell") > 0:
+				out1 = spell(text)
+				for i in out1:
+					speak(str(i))
+			elif text.count("speed") > 0:
+				internet(text)
+			elif text.count("listen") > 0:
+				spot(text)
 			else:
-				openProgram(text)
-		elif text.count("events") > 0:
-			speak("Your events are")
-			getEvents(authenticateGoogle())
-		elif text.count("note") > 0:
-			note(text)
-		elif text.count("google") > 0:
-			google(text)
-		elif text.count("weather") > 0:
-			out = weather(text)
-			print(out)
-			speak(out)
-		elif text.count("spell") > 0:
-			out1 = spell(text)
-			for i in out1:
-				speak(str(i))
-		elif text.count("speed") > 0:
-			internet(text)
-		elif text.count("listen") > 0:
-			spot(text)
-		else:
-			search(text)
+				search(text)
+	else:
+		print("User not recognized")
+		speak("User not recognized")
 
 if __name__ == '__main__':
 	main()
